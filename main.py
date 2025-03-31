@@ -4,7 +4,7 @@ from telethon import TelegramClient, events
 from config import cfg
 
 CHUNK_SIZE = 3800
-MSG_TAIL = "\n Donate me to Sber: 89527339056 or TON: UQA2fRjn7N901f8bX5h0Z-vDsaxeMsQoFu8C06PfuH7r8DfI \n"
+MSG_TAIL = "\n Donate me to \nSber: 89527339056\n or TON: UQA2fRjn7N901f8bX5h0Z-vDsaxeMsQoFu8C06PfuH7r8DfI \n"
 
 
 bot = TelegramClient('bot', cfg.API_ID, cfg.API_HASH, device_model="Windows Desktop",system_version="Ubuntu 20.2")

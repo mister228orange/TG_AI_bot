@@ -3,8 +3,8 @@ from AIManager import AIManager
 from telethon import TelegramClient, events
 from config import cfg
 
-AI_URL = 'http://localhost:11434/api/chat'
-CHUNK_SIZE = 4000
+CHUNK_SIZE = 3800
+MSG_TAIL = "\n Donate me to Sber: 89527339056 or TON: UQA2fRjn7N901f8bX5h0Z-vDsaxeMsQoFu8C06PfuH7r8DfI \n"
 
 
 bot = TelegramClient('bot', cfg.API_ID, cfg.API_HASH, device_model="Windows Desktop",system_version="Ubuntu 20.2")
@@ -20,7 +20,7 @@ async def handle_msgs(event):
     try:
         AI_response = await ai.get_AI_response(sender, event.message.message)
         for start_slice in range(0, len(AI_response), CHUNK_SIZE):
-            await bot.send_message(sender, message=AI_response[start_slice:start_slice+CHUNK_SIZE])
+            await bot.send_message(sender, message=AI_response[start_slice:start_slice+CHUNK_SIZE] + MSG_TAIL)
     except Exception as e:
         print(e)
 

@@ -1,10 +1,7 @@
 from ollama import AsyncClient
 import sqlite3
-from config import cfg
-
 
 MODEL_NAME = 'gemma3:12b'
-MODEL_SUBNAME = 'gay'
 
 
 class AIManager:

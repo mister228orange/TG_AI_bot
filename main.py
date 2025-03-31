@@ -5,7 +5,7 @@ from config import cfg
 
 
 CHUNK_SIZE = 3800
-MSG_TAIL = "\n Donate me to \nSber: 89527339056\n or TON: UQA2fRjn7N901f8bX5h0Z-vDsaxeMsQoFu8C06PfuH7r8DfI \n"
+MSG_TAIL = f"\n Donate me to \nSber: {cfg.PHONE_NUMBER}\n or TON: {cfg.TON_WALLET} \n"
 
 
 async def handle_msgs(event):
@@ -31,14 +31,10 @@ async def handle_msgs(event):
 async def main():
     # Initialize components
     global ai_controller, tg_client
+
     ai_controller = AIManager("gemma3:12b", "google")
-
-    # Create client
     tg_client = TelegramClient('bot', cfg.API_ID, cfg.API_HASH)
-
-    tg_client.add_event_handler(events.NewMessage)
     tg_client.add_event_handler(handle_msgs, events.NewMessage())
-
 
     try:
         print("Starting bot...")

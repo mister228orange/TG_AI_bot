@@ -9,7 +9,7 @@ MSG_TAIL = "\n Donate me to \nSber: 89527339056\n or TON: UQA2fRjn7N901f8bX5h0Z-
 
 async def main():
     # Initialize components
-    ai = AIManager()
+    ai = AIManager("gemma3:12b", "google")
 
     # Create client
     bot = TelegramClient('bot', cfg.API_ID, cfg.API_HASH)
@@ -19,16 +19,22 @@ async def main():
         """Handle incoming messages"""
         print("Received message:", event.message)
         sender = event.chat_id
-
-        try:
-            AI_response = await ai.get_AI_response(sender, event.message.message)
-            for start_slice in range(0, len(AI_response), CHUNK_SIZE):
-                await bot.send_message(
-                    sender,
-                    message=AI_response[start_slice:start_slice + CHUNK_SIZE] + MSG_TAIL
-                )
-        except Exception as e:
-            print(f"Error handling message: {e}")
+        if event.message.message == '/start':
+            await bot.send_message(
+                sender,
+                message=f'Привет, я LLM {ai.model_name} от {ai.model_developers},'
+                        f' готова ответить на любые ваши текстовые вопросы.'
+            )
+        else:
+            try:
+                AI_response = await ai.get_AI_response(sender, event.message.message)
+                for start_slice in range(0, len(AI_response), CHUNK_SIZE):
+                    await bot.send_message(
+                        sender,
+                        message=AI_response[start_slice:start_slice + CHUNK_SIZE] + MSG_TAIL
+                    )
+            except Exception as e:
+                print(f"Error handling message: {e}")
 
     try:
         print("Starting bot...")

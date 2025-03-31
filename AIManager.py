@@ -1,12 +1,12 @@
 from ollama import AsyncClient
 import sqlite3
 
-MODEL_NAME = 'gemma3:12b'
-
 
 class AIManager:
 
-    def __init__(self):
+    def __init__(self, model_name, model_developer="unknow"):
+        self.model_name = 'gemma3:12b'
+        self.model_developers = model_developer
         self.chats = {}
         self.conn = sqlite3.connect('msgs.db')
         self.cursor = self.conn.cursor()

@@ -33,31 +33,39 @@ class AIManager:
         print(f"User {sender} send '{msg[:50]}' and wait answer")
         message = {'role': 'user', 'content': msg}
 
+        """Add message to history or create new user history"""
         if sender in self.chats:
             self.chats[sender].append(message)
         else:
             self.chats[sender] = [message]
 
         resp_txt = []
-        async for part in await AsyncClient().chat(model=self.model_name, messages=self.chats[sender], stream=True):
-            resp_txt.append(part['message']['content'])
-        resp_txt = ''.join(resp_txt)
-        print(f"AI completed answered '{resp_txt[:50]}'... to {sender}")
+        try:
+            async for part in await AsyncClient().chat(model=self.model_name, messages=self.chats[sender], stream=True):
+                resp_txt.append(part['message']['content'])
+            resp_txt = ''.join(resp_txt)
+            resp_message = {'role': 'assistant', 'content': resp_txt}
+            self.chats[sender].append(resp_message)
+            self.save_msgs()
+            self.print_stat()
+            print(f"AI completed answered '{resp_txt[:50]}'... to {sender}")
 
-        resp_message = {'role': 'assistant', 'content': resp_txt}
-        self.chats[sender].append(resp_message)
-        self.save_msgs()
-        self.print_stat()
-        return resp_txt
+        except Exception as e:
+            resp_txt = f"AI failed with error {e}"
+            print(resp_txt)
+        finally:
+            return resp_txt
 
 
     def save_msgs(self):
         for sender, messages in self.chats.items():
             for msg in messages:
-                self.cursor.execute("SELECT COUNT(*) FROM messages WHERE user_id = ? AND msg_txt = ? AND role = ?", (sender, msg['content'], msg['role']))
+                self.cursor.execute("SELECT COUNT(*) FROM messages WHERE user_id = ? AND msg_txt = ? AND role = ?",
+                                    (sender, msg['content'], msg['role']))
                 count = self.cursor.fetchone()[0]
                 if count == 0:
-                    self.cursor.execute("INSERT INTO messages (user_id, msg_txt, role) VALUES (?, ?, ?)", (sender, msg['content'], msg['role']))
+                    self.cursor.execute("INSERT INTO messages (user_id, msg_txt, role) VALUES (?, ?, ?)",
+                                        (sender, msg['content'], msg['role']))
 
         self.conn.commit()
 

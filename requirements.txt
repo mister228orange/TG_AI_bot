@@ -1,0 +1,2 @@
+Telethon~=1.39.0
+ollama~=0.4.7

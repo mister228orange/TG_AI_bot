@@ -20,6 +20,8 @@ async def handle_msgs(event):
         try:
             AI_response = await ai_controller.get_AI_response(sender, event.message.message)
             for start_slice in range(0, len(AI_response), CHUNK_SIZE):
+                """ Telegram message shorter than 4096 characters"""
+
                 await tg_client.send_message(
                     sender,
                     message=AI_response[start_slice:start_slice + CHUNK_SIZE] + MSG_TAIL

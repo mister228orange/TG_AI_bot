@@ -39,7 +39,7 @@ class AIManager:
             self.chats[sender] = [message]
 
         resp_txt = []
-        async for part in await AsyncClient().chat(model=MODEL_NAME, messages=self.chats[sender], stream=True):
+        async for part in await AsyncClient().chat(model=self.model_name, messages=self.chats[sender], stream=True):
             resp_txt.append(part['message']['content'])
         resp_txt = ''.join(resp_txt)
         print(f"AI completed answered '{resp_txt[:50]}'... to {sender}")
